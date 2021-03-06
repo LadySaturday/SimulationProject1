@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 3298508684243391848}
   - component: {fileID: 3298508684243391849}
   - component: {fileID: 3298508684243391862}
-  - component: {fileID: 3298508684243391863}
-  - component: {fileID: -3876337905059138600}
   - component: {fileID: 6991461701610967256}
+  - component: {fileID: 3298508684243391863}
   - component: {fileID: -8988969220392978443}
   - component: {fileID: -5640326628367791127}
+  - component: {fileID: 8021477323204971992}
   m_Layer: 0
   m_Name: Car
   m_TagString: Car
@@ -84,37 +84,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &3298508684243391863
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3298508684243391860}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-3876337905059138600
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3298508684243391860}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 294a93da2c85a684290e1c88a477db27, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetWindow: {fileID: 0}
-  targetCar: {fileID: 0}
-  targetExit: {fileID: 0}
-  driveThruWindow: {fileID: 0}
-  queueManager: {fileID: 0}
-  carState: -1
 --- !u!195 &6991461701610967256
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -137,6 +106,19 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!65 &3298508684243391863
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3298508684243391860}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &-8988969220392978443
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -164,5 +146,17 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2, y: 2, z: 3}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 2, y: 2, z: 1.5}
+  m_Center: {x: 0, y: 0, z: -0.104313135}
+--- !u!114 &8021477323204971992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3298508684243391860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08ab02a6c2313a243ac708416a463099, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

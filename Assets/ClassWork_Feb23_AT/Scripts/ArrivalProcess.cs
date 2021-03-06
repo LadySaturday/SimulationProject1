@@ -17,8 +17,8 @@ public class ArrivalProcess : MonoBehaviour
     public GameObject carPrefab;
     public Transform carSpawnPlace;
 
-    public float arrivalRateAsCarsPerHour = 20; // car/hour
-    public float interArrivalTimeInHours; // = 1.0 / arrivalRateAsCarsPerHour;
+    public float arrivalRateAsCarsPerHour = 30;// car/hour
+    public float interArrivalTime; // = 1.0 / arrivalRateAsCarsPerHour;
     private float interArrivalTimeInMinutes;
     private float interArrivalTimeInSeconds;
 
@@ -44,23 +44,16 @@ public class ArrivalProcess : MonoBehaviour
     //New as of Feb.25th
     QueueManager queueManager;
 
-    //UI debugging
-#if DEBUG_AP
-    public Text txtDebug;
-#endif
 
     // Start is called before the first frame update
     void Start()
     {
         queueManager = GameObject.FindGameObjectWithTag("DriveThruWindow").GetComponent<QueueManager>();
-        interArrivalTimeInHours = 1.0f / arrivalRateAsCarsPerHour;
-        interArrivalTimeInMinutes = interArrivalTimeInHours * 60;
+        interArrivalTime = 1.0f / arrivalRateAsCarsPerHour;
+        interArrivalTimeInMinutes = interArrivalTime * 60;
         interArrivalTimeInSeconds = interArrivalTimeInMinutes * 60;
         StartCoroutine(GenerateArrivals());
-#if DEBUG_AP
-        print("proc#:" + System.Environment.ProcessorCount);
-        txtDebug.text = "\nproc#:" + System.Environment.ProcessorCount;
-#endif
+
     }
    
     IEnumerator GenerateArrivals()

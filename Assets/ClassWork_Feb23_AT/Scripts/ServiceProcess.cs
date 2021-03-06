@@ -54,13 +54,13 @@ public class ServiceProcess : MonoBehaviour
         if (other.gameObject.tag == "Car")
         {
             carInService = other.gameObject;
-            carInService.GetComponent<CarController>().SetInService(true);
+            carInService.GetComponent<CarBehaviour>().stateMachine.TransitionTo("Service");
 
             //if (queueManager.Count() == 0)
             //{
             //    queueManager.Add(carInService);
             //}
-            
+
             generateServices = true;
             //carController = carInService.GetComponent<CarController>();
             StartCoroutine(GenerateServices());
@@ -103,7 +103,7 @@ public class ServiceProcess : MonoBehaviour
             //yield return new WaitForSeconds(interServiceTimeInSeconds);
 
         }
-        carInService.GetComponent<CarController>().ExitService(carExitPlace);
+        carInService.GetComponent<CarBehaviour>().stateMachine.TransitionTo("Exit");
 
     }
     private void OnDrawGizmos()
