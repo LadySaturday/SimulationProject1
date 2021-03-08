@@ -3,14 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-//using System;
-//class MyObservable : System.IObservable<float>
-//{
-//    public System.IDisposable Subscribe(System.IObserver<float> observer)
-//    {
-//        throw new System.NotImplementedException();
-//    }
-//}
 public class ArrivalProcess : MonoBehaviour
 {
 
@@ -61,11 +53,7 @@ public class ArrivalProcess : MonoBehaviour
         while (generateArrivals)
         {
             GameObject carGO=Instantiate(carPrefab, carSpawnPlace.position, Quaternion.identity);
-            //if (queueManager.Count() > 0)
-            //{
-            //    queueManager.Add(carGO);
-            //} //The first car as added in the queue when in DriveThruWindow
-
+         
             float timeToNextArrivalInSec = interArrivalTimeInSeconds;
             switch (arrivalIntervalTimeStrategy)
             {

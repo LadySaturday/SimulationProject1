@@ -11,10 +11,13 @@ public class CarBehaviour : MonoBehaviour
     private static Transform window;
     private static Transform exit;
     public StateMachine stateMachine { get; private set; }
+    private QueueManager queueManager;
     // Start is called before the first frame update
     void Start()
     {
-        
+
+        queueManager = GameObject.FindGameObjectWithTag("DriveThruWindow").GetComponent<QueueManager>();
+        queueManager.Add(this.gameObject);
 
         agent = GetComponent<NavMeshAgent>();
         if (!window)
@@ -62,7 +65,9 @@ public class CarBehaviour : MonoBehaviour
             Name = "Exit",
             OnEnter = () =>
             {
+                agent.isStopped = false;
                 setDestination(exit);
+                queueManager.PopFirst();
             },
             OnStay = () =>
             {
@@ -70,7 +75,7 @@ public class CarBehaviour : MonoBehaviour
             },
             OnExit = () =>
             {
-
+                
             }
 
         });
@@ -83,8 +88,17 @@ public class CarBehaviour : MonoBehaviour
         agent.SetDestination(target.position);
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "CarExit")
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
     private void Update()
     {
         stateMachine.Update();
+        
     }
 }

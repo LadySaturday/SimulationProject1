@@ -43,9 +43,6 @@ public class ServiceProcess : MonoBehaviour
         interServiceTimeInHours = 1.0f / serviceRateAsCarsPerHour;
         interServiceTimeInMinutes = interServiceTimeInHours * 60;
         interServiceTimeInSeconds = interServiceTimeInMinutes * 60;
-        //queueManager = this.GetComponent<QueueManager>();
-        //queueManager = new QueueManager();
-        //StartCoroutine(GenerateServices());
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -54,15 +51,8 @@ public class ServiceProcess : MonoBehaviour
         if (other.gameObject.tag == "Car")
         {
             carInService = other.gameObject;
-            carInService.GetComponent<CarBehaviour>().stateMachine.TransitionTo("Service");
-
-            //if (queueManager.Count() == 0)
-            //{
-            //    queueManager.Add(carInService);
-            //}
-
+            carInService.GetComponent<CarBehaviour>().stateMachine.TransitionTo("Service"); Debug.Log("In service");
             generateServices = true;
-            //carController = carInService.GetComponent<CarController>();
             StartCoroutine(GenerateServices());
         }
     }
@@ -103,7 +93,7 @@ public class ServiceProcess : MonoBehaviour
             //yield return new WaitForSeconds(interServiceTimeInSeconds);
 
         }
-        carInService.GetComponent<CarBehaviour>().stateMachine.TransitionTo("Exit");
+        carInService.GetComponent<CarBehaviour>().stateMachine.TransitionTo("Exit"); Debug.Log("Car exiting");
 
     }
     private void OnDrawGizmos()
