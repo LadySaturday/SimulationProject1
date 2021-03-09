@@ -42,7 +42,7 @@ public class ServiceProcess : MonoBehaviour
         Interrupted
     }
 
-    public ServiceIntervalTimeStrategy serviceIntervalTimeStrategy = ServiceIntervalTimeStrategy.Uniform;
+    public ServiceIntervalTimeStrategy serviceIntervalTimeStrategy = ServiceIntervalTimeStrategy.Interrupted;
 
     // Start is called before the first frame update
     void Start()
@@ -59,6 +59,7 @@ public class ServiceProcess : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
+
         
             if (other.gameObject.tag == "Car")//&&!servicing&&!other.GetComponent<CarBehaviour>().hasBeenServiced)
             {
@@ -126,7 +127,8 @@ public class ServiceProcess : MonoBehaviour
             
 
         }
-        carInService.GetComponent<CarBehaviour>().stateMachine.TransitionTo("Exit"); Debug.Log("Car exiting");
+        if(carInService)
+        carInService.GetComponent<CarBehaviour>().stateMachine.TransitionTo("Exit");
         //servicing = false;
 
     }
