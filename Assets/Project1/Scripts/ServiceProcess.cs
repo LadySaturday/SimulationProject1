@@ -9,9 +9,7 @@ public class ServiceProcess : MonoBehaviour
     public Transform carExitPlace;
 
     public float serviceRateAsCarsPerHour = 30; // car/hour
-    public float interServiceTimeInHours; // = 1.0 / ServiceRateAsCarsPerHour;
-    private float interServiceTimeInMinutes;
-    private float interServiceTimeInSeconds;
+    public float interServiceTime;
 
     //public float ServiceRateAsCarsPerHour = 20; // car/hour
     public bool generateServices = false;
@@ -38,7 +36,7 @@ public class ServiceProcess : MonoBehaviour
         Constant,
         Uniform,
         Exponential,
-        ObservedIntervalTime,
+        Observed,
         Interrupted
     }
 
@@ -47,15 +45,18 @@ public class ServiceProcess : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        interServiceTimeInHours = 1.0f / serviceRateAsCarsPerHour;
-        interServiceTimeInMinutes = interServiceTimeInHours * 60;
-        interServiceTimeInSeconds = interServiceTimeInMinutes * 60;
+        calculations();
+       
+    }
+
+    public void calculations()
+    {
+        interServiceTime = (1.0f / serviceRateAsCarsPerHour)*60*60;
 
         //new
         avgTimeInQ = ArrivalMechanism.instance.trafficIntensity / (ArrivalMechanism.instance.probSystemNotIdle) * (1 / ArrivalMechanism.instance.rateOfService);
         avgTimeInSystem = 1 / (ArrivalMechanism.instance.probSystemNotIdle) * (1 / ArrivalMechanism.instance.rateOfService);
 
-       
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -93,11 +94,11 @@ public class ServiceProcess : MonoBehaviour
         while (generateServices)
         {
             //Instantiate(carPrefab, carSpawnPlace.position, Quaternion.identity);
-            float timeToNextServiceInSec = interServiceTimeInSeconds;
+            float timeToNextServiceInSec = interServiceTime;
             switch (serviceIntervalTimeStrategy)
             {
                 case ServiceIntervalTimeStrategy.Constant:
-                    timeToNextServiceInSec = interServiceTimeInSeconds;
+                    timeToNextServiceInSec = interServiceTime;
                     break;
                 case ServiceIntervalTimeStrategy.Uniform:
                     timeToNextServiceInSec = Random.Range(minInterServiceTimeInSeconds, maxInterServiceTimeInSeconds);
@@ -107,8 +108,8 @@ public class ServiceProcess : MonoBehaviour
                     float Lambda = 1 / serviceRateAsCarsPerHour;
                     timeToNextServiceInSec = Utilities.GetExp(U, Lambda);
                     break;
-                case ServiceIntervalTimeStrategy.ObservedIntervalTime:
-                    timeToNextServiceInSec = interServiceTimeInSeconds;
+                case ServiceIntervalTimeStrategy.Observed:
+                    timeToNextServiceInSec = interServiceTime;
                     break;
                 case ServiceIntervalTimeStrategy.Interrupted:
                     timeToNextServiceInSec = (avgTimeInSystem - avgTimeInQ)*timeScale; 

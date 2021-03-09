@@ -25,13 +25,14 @@ public class ArrivalProcess : MonoBehaviour
     //
     public enum ArrivalIntervalTimeStrategy
     {
-        ConstantIntervalTime,
-        UniformIntervalTime,
-        ExponentialIntervalTime,
-        ObservedIntervalTime
+        Constant,
+        Uniform,
+        Exponential,
+        Observed,
+        Interrupted
     }
 
-    public ArrivalIntervalTimeStrategy arrivalIntervalTimeStrategy=ArrivalIntervalTimeStrategy.UniformIntervalTime;
+    public ArrivalIntervalTimeStrategy arrivalIntervalTimeStrategy=ArrivalIntervalTimeStrategy.Uniform;
 
     //New as of Feb.25th
     QueueManager queueManager;
@@ -57,18 +58,21 @@ public class ArrivalProcess : MonoBehaviour
             float timeToNextArrivalInSec = interArrivalTimeInSeconds;
             switch (arrivalIntervalTimeStrategy)
             {
-                case ArrivalIntervalTimeStrategy.ConstantIntervalTime:
+                case ArrivalIntervalTimeStrategy.Constant:
                     timeToNextArrivalInSec= interArrivalTimeInSeconds;
                     break;
-                case ArrivalIntervalTimeStrategy.UniformIntervalTime:
+                case ArrivalIntervalTimeStrategy.Uniform:
                     timeToNextArrivalInSec = Random.Range(minInterArrivalTimeInSeconds, maxInterArrivalTimeInSeconds);
                     break;
-                case ArrivalIntervalTimeStrategy.ExponentialIntervalTime:
+                case ArrivalIntervalTimeStrategy.Exponential:
                     float U = Random.value;
                     float Lambda = 1 / arrivalRateAsCarsPerHour;
                     timeToNextArrivalInSec = Utilities.GetExp(U,Lambda);
                     break;
-                case ArrivalIntervalTimeStrategy.ObservedIntervalTime:
+                case ArrivalIntervalTimeStrategy.Observed:
+                    timeToNextArrivalInSec = interArrivalTimeInSeconds;
+                    break;
+                case ArrivalIntervalTimeStrategy.Interrupted://MUST FIX< THIS IS WRONG
                     timeToNextArrivalInSec = interArrivalTimeInSeconds;
                     break;
                 default:

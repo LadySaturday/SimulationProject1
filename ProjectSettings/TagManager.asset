@@ -7,6 +7,12 @@ TagManager:
   - DriveThruWindow
   - Car
   - exit
+  - CarExit
+  - Dropdown
+  - CarSpawn
+  - Slider
+  - ArrivalRate
+  - ServiceRate
   layers:
   - Default
   - TransparentFX

@@ -7,7 +7,7 @@ public class ArrivalMechanism : MonoBehaviour
     //our arrival mechanism spawns a car on average 30 times per hour. 
     public static ArrivalMechanism instance { get; private set; }
    
-    private float arrivalRate = 30;//30 per hour, Lambda
+    public float arrivalRate = 30;//30 per hour, Lambda
     private float interArrivalTime;
     public float rateOfService { get; private set; } = 60;//mu
     public float serviceTime { get; private set; } 
@@ -32,8 +32,14 @@ public class ArrivalMechanism : MonoBehaviour
     {
         instance = this;
 
+        calculations();
+
+    }
+
+    public void calculations()
+    {
         //M/M/1 variables
-        interArrivalTime = (1 / arrivalRate)*60*60;//1/lambda
+        interArrivalTime = (1 / arrivalRate) * 60 * 60;//1/lambda
         serviceTime = 1 / rateOfService;//1/mu
         trafficIntensity = arrivalRate / rateOfService;//rho=lambda/mu
         probSystemNotIdle = 1 - trafficIntensity;
@@ -46,7 +52,6 @@ public class ArrivalMechanism : MonoBehaviour
         avgNumCarsInSystem = trafficIntensity / (probSystemNotIdle);
         avgNumCarsInQ_noQ = Mathf.Pow(trafficIntensity, 2) / (probSystemNotIdle);
         avgNumCarsInQ_WQ = 1 / (probSystemNotIdle);
-
     }
 
     private void Spawn()
