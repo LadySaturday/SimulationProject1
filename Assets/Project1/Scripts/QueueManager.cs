@@ -38,9 +38,11 @@ public class QueueManager : MonoBehaviour
         }
         return go;
     }
-    public void Add(CarBehaviour CarBehaviour)
+    public int Add(CarBehaviour CarBehaviour)
     {
+        int index = queue.Count;
         queue.Add(CarBehaviour);
+        return index;
     }
     public CarBehaviour PopFirst()
     {
@@ -56,5 +58,10 @@ public class QueueManager : MonoBehaviour
     {   
         return queue.Count;
     }
-  
+    public CarBehaviour this[int index]
+    {
+        get => queue[index];
+        set => queue[index] = value;
+    }
+
 }

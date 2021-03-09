@@ -36,7 +36,15 @@ public class StateMachine {
         CurrentState?.OnStay?.Invoke();
     }
 
-    public void TransitionTo(State state) {
+    public void TransitionTo(State state)
+    {
+        if (CurrentState != null)
+        {
+            if (CurrentState.Name.ToLower() == state.Name.ToLower())
+            {
+                return;
+            }
+        }
         Exit(CurrentState);
         Enter(state);
     }

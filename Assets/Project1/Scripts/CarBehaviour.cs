@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -7,19 +8,25 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class CarBehaviour : MonoBehaviour
 {
+    public static event System.Action refreshTargets;
     private NavMeshAgent agent;
     private static Transform window;
     private static Transform exit;
     public StateMachine stateMachine { get; private set; }
     private QueueManager queueManager;
 
-    private bool hasBeenServiced = false;
+    public bool hasBeenServiced = false;
+
+    private CarBehaviour target;
+    private Transform targetTransform;
+    private int index;
     // Start is called before the first frame update
     void Start()
     {
+        refreshTargets += UpdateTarget;
 
         queueManager = GameObject.FindGameObjectWithTag("DriveThruWindow").GetComponent<QueueManager>();
-        queueManager.Add(this);
+        index=queueManager.Add(this);
 
         agent = GetComponent<NavMeshAgent>();
         if (!window)
@@ -35,14 +42,22 @@ public class CarBehaviour : MonoBehaviour
             {
                 if (queueManager.Count() > 1)
                 {
-                    setDestination((queueManager.Next()).transform);
+                    target = queueManager.Next();
+                    setDestination(target.transform);
+                    targetTransform=target.transform;
+                }
+
+                else
+                {
+                    setDestination(window);
+                    targetTransform = window;
+
                 }
                    
-                else
-                    setDestination(window);
             },
             OnStay = () =>
             {
+                setDestination(targetTransform);
 
             },
             OnExit = () =>
@@ -71,11 +86,11 @@ public class CarBehaviour : MonoBehaviour
             },
             OnStay = () =>
             {
-
+                setDestination(targetTransform);
             },
             OnExit = () =>
             {
-              
+             
             }
 
         });
@@ -85,13 +100,15 @@ public class CarBehaviour : MonoBehaviour
             OnEnter = () =>
             {
                 agent.isStopped = false;
-                setDestination(exit);
+                setDestination(exit); 
                 queueManager.PopFirst();
-                queueManager.Last()?.setDestination(window);
+                refreshTargets?.Invoke();
+                //queueManager.Last()?.setDestination(window);
+
             },
             OnStay = () =>
             {
-
+                setDestination(exit);
             },
             OnExit = () =>
             {
@@ -120,5 +137,39 @@ public class CarBehaviour : MonoBehaviour
     {
         stateMachine.Update();
         
+    }
+
+
+    private void UpdateTarget()
+    {
+        try
+        {
+
+
+            if (stateMachine.CurrentState.Name != "exit")
+            {
+                if (!target || target.stateMachine.CurrentState.Name == "exit")
+                {
+                    target = null;
+                    setDestination(window);
+                    targetTransform = window;
+                }
+                else
+                {
+                    setDestination(target.transform);
+                }
+            }
+        }
+        catch (Exception)
+        {
+            Debug.Log("bruh");
+            target = null;
+            targetTransform = window;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        refreshTargets -= UpdateTarget;
     }
 }

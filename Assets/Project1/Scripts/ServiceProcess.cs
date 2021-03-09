@@ -22,6 +22,7 @@ public class ServiceProcess : MonoBehaviour
     public float minInterServiceTimeInSeconds = 3;
     public float maxInterServiceTimeInSeconds = 60;
     //
+   
 
     
 
@@ -31,7 +32,7 @@ public class ServiceProcess : MonoBehaviour
     private float avgTimeInSystem;//1/(1-rho)*1/mu
     private const float timeScale= 60 * 60;
 
-    private bool serving = false;
+    private bool servicing = false;
     public enum ServiceIntervalTimeStrategy
     {
         Constant,
@@ -56,29 +57,29 @@ public class ServiceProcess : MonoBehaviour
 
        
     }
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        print("ServiceProcess.OnTriggerEnter:other=" + other.gameObject.name);
-
         
-            if (other.gameObject.tag == "Car"&&!serving)
+            if (other.gameObject.tag == "Car")//&&!servicing&&!other.GetComponent<CarBehaviour>().hasBeenServiced)
             {
-            serving = true;
+
             carInService = other.gameObject;
+            //servicing = true;
             CarBehaviour carBehaviour = carInService.GetComponent<CarBehaviour>();
 
                 if (carBehaviour.stateMachine.CurrentState.Name != "service")
                 {
                 
-                carBehaviour.stateMachine.TransitionTo("Service"); //Debug.Log("In service");
-                }
+                carBehaviour.stateMachine.TransitionTo("Service"); Debug.Log("In service");
+                
+            }
                 else
                 {
-                    //Debug.Log("We in service bro");
+                    Debug.Log("We in service bro");
                 }
-                generateServices = true;
-                StartCoroutine(GenerateServices());
-            }
+            generateServices = true;
+            StartCoroutine(GenerateServices());
+        }
         
        
     }
@@ -120,12 +121,13 @@ public class ServiceProcess : MonoBehaviour
             //New as of Feb.23rd
             //float timeToNextServiceInSec = Random.Range(minInterServiceTimeInSeconds,maxInterServiceTimeInSeconds);
             generateServices = false;
+           
             yield return new WaitForSeconds(timeToNextServiceInSec);
             
 
         }
         carInService.GetComponent<CarBehaviour>().stateMachine.TransitionTo("Exit"); Debug.Log("Car exiting");
-        serving = false;
+        //servicing = false;
 
     }
     private void OnDrawGizmos()
