@@ -40,7 +40,7 @@ public class ArrivalProcess : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        queueManager = GameObject.FindGameObjectWithTag("DriveThruWindow").GetComponent<QueueManager>();
+        //queueManager = GameObject.FindGameObjectWithTag("DriveThruWindow").GetComponent<QueueManager>();
         interArrivalTime = 1.0f / arrivalRateAsCarsPerHour;
         interArrivalTimeInMinutes = interArrivalTime * 60;
         interArrivalTimeInSeconds = interArrivalTimeInMinutes * 60;

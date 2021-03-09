@@ -8,7 +8,7 @@ public class ServiceProcess : MonoBehaviour
     public GameObject carInService;
     public Transform carExitPlace;
 
-    public float serviceRateAsCarsPerHour = 25; // car/hour
+    public float serviceRateAsCarsPerHour = 30; // car/hour
     public float interServiceTimeInHours; // = 1.0 / ServiceRateAsCarsPerHour;
     private float interServiceTimeInMinutes;
     private float interServiceTimeInSeconds;
@@ -27,6 +27,12 @@ public class ServiceProcess : MonoBehaviour
     //CarController carController;
     QueueManager queueManager; //=new QueueManager();
 
+
+    //new
+    private float avgTimeInQ;//rho/(1-rho)*1/mu
+    private float avgTimeInSystem;//1/(1-rho)*1/mu
+    private float avgTimeAtWindow;
+    private ArrivalMechanism arrivalMechanism;
     public enum ServiceIntervalTimeStrategy
     {
         ConstantIntervalTime,
@@ -43,6 +49,12 @@ public class ServiceProcess : MonoBehaviour
         interServiceTimeInHours = 1.0f / serviceRateAsCarsPerHour;
         interServiceTimeInMinutes = interServiceTimeInHours * 60;
         interServiceTimeInSeconds = interServiceTimeInMinutes * 60;
+
+        //new
+        avgTimeInQ = arrivalMechanism.trafficIntensity / (arrivalMechanism.probSystemNotIdle) * (1 / arrivalMechanism.rateOfService);
+        avgTimeInSystem = 1 / (arrivalMechanism.probSystemNotIdle) * (1 / arrivalMechanism.rateOfService);
+
+        avgTimeAtWindow = avgTimeInSystem - avgTimeInQ;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -89,8 +101,7 @@ public class ServiceProcess : MonoBehaviour
             //float timeToNextServiceInSec = Random.Range(minInterServiceTimeInSeconds,maxInterServiceTimeInSeconds);
             generateServices = false;
             yield return new WaitForSeconds(timeToNextServiceInSec);
-
-            //yield return new WaitForSeconds(interServiceTimeInSeconds);
+            
 
         }
         carInService.GetComponent<CarBehaviour>().stateMachine.TransitionTo("Exit"); Debug.Log("Car exiting");
