@@ -1809,8 +1809,8 @@ MonoBehaviour:
   interServiceTimeInHours: 0
   generateServices: 1
   minInterServiceTimeInSeconds: 3
-  maxInterServiceTimeInSeconds: 30
-  serviceIntervalTimeStrategy: 2
+  maxInterServiceTimeInSeconds: 5
+  serviceIntervalTimeStrategy: 0
 --- !u!114 &1741770769
 MonoBehaviour:
   m_ObjectHideFlags: 0

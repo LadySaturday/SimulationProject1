@@ -60,10 +60,21 @@ public class ServiceProcess : MonoBehaviour
     {
         print("ServiceProcess.OnTriggerEnter:other=" + other.gameObject.name);
 
+        
+
+
         if (other.gameObject.tag == "Car")
         {
             carInService = other.gameObject;
-            carInService.GetComponent<CarBehaviour>().stateMachine.TransitionTo("Service"); Debug.Log("In service");
+            CarBehaviour carBehaviour = carInService.GetComponent<CarBehaviour>();
+            
+            if (carBehaviour.stateMachine.CurrentState.Name!="service") {
+                carBehaviour.stateMachine.TransitionTo("Service"); Debug.Log("In service");
+            }
+            else
+            {
+                Debug.Log("We in service bro");
+            }
             generateServices = true;
             StartCoroutine(GenerateServices());
         }

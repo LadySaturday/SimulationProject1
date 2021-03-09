@@ -12,6 +12,8 @@ public class CarBehaviour : MonoBehaviour
     private static Transform exit;
     public StateMachine stateMachine { get; private set; }
     private QueueManager queueManager;
+
+    private bool hasBeenServiced = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -48,7 +50,14 @@ public class CarBehaviour : MonoBehaviour
             Name = "Service",
             OnEnter = () =>
             {
-                agent.isStopped = true;
+
+                if (hasBeenServiced)
+                    stateMachine.TransitionTo("Exit");
+                else
+                {
+                    agent.isStopped = true;
+                    hasBeenServiced = true;
+                }
             },
             OnStay = () =>
             {
@@ -56,7 +65,7 @@ public class CarBehaviour : MonoBehaviour
             },
             OnExit = () =>
             {
-                agent.isStopped = false;
+              
             }
 
         });

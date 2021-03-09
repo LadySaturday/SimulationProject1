@@ -20,10 +20,9 @@ public class ArrivalMechanism : MonoBehaviour
     private float avgNumCarsInQ_noQ;//rho^2/(1-rho)
     private float avgNumCarsInQ_WQ;//1/(1-rho)
 
-
+    private bool canSpawn=true;
     //car prefab &spawn
     public GameObject carPrefab;
-    private Transform carSpawn;
 
     public bool generateArrivals=true;
 
@@ -48,29 +47,24 @@ public class ArrivalMechanism : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-       
-        //
-        carSpawn = GameObject.FindGameObjectWithTag("CarSpawn").GetComponent<Transform>();
-
-        StartCoroutine(GenerateArrivals());
-
+        
     }
 
-
-    IEnumerator GenerateArrivals()
+    private void Spawn()
     {
-        while (generateArrivals)
-        {
-            GameObject carClone = Instantiate(carPrefab, carSpawn);
+        canSpawn = false;
+        Invoke("SetSpawnFlag", interArrivalTime);
+        GameObject carClone = Instantiate(carPrefab, transform);
+    }
 
-        }
-        yield return new WaitForSeconds(interArrivalTime);
+    private void SetSpawnFlag()
+    {
+        canSpawn = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (generateArrivals && canSpawn) Spawn();
     }
 }
