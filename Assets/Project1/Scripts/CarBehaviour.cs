@@ -19,7 +19,7 @@ public class CarBehaviour : MonoBehaviour
     {
 
         queueManager = GameObject.FindGameObjectWithTag("DriveThruWindow").GetComponent<QueueManager>();
-        queueManager.Add(this.gameObject);
+        queueManager.Add(this);
 
         agent = GetComponent<NavMeshAgent>();
         if (!window)
@@ -33,7 +33,13 @@ public class CarBehaviour : MonoBehaviour
             Name = "Entered",
             OnEnter = () =>
             {
-                setDestination(window);
+                if (queueManager.Count() > 1)
+                {
+                    setDestination((queueManager.Next()).transform);
+                }
+                   
+                else
+                    setDestination(window);
             },
             OnStay = () =>
             {
@@ -52,7 +58,11 @@ public class CarBehaviour : MonoBehaviour
             {
 
                 if (hasBeenServiced)
+                {
                     stateMachine.TransitionTo("Exit");
+                    
+                }
+                    
                 else
                 {
                     agent.isStopped = true;
@@ -77,6 +87,7 @@ public class CarBehaviour : MonoBehaviour
                 agent.isStopped = false;
                 setDestination(exit);
                 queueManager.PopFirst();
+                queueManager.Last()?.setDestination(window);
             },
             OnStay = () =>
             {

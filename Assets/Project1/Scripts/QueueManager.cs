@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class QueueManager : MonoBehaviour
 {
-    List<GameObject> queue = new List<GameObject>();
+    List<CarBehaviour> queue = new List<CarBehaviour>();
 
-    public GameObject Last()
+    public CarBehaviour Last()
     {
-        GameObject go = null;
+        CarBehaviour go = null;
 
         if (queue.Count > 0)
         {
@@ -16,9 +16,21 @@ public class QueueManager : MonoBehaviour
         }
         return go;
     }
-    public GameObject First()
+
+    public CarBehaviour Next()
     {
-        GameObject go = null;
+        CarBehaviour go = null;
+
+        if (queue.Count >=2)
+        {
+            go=queue[queue.Count - 2];
+        }
+        
+        return go;
+    }
+    public CarBehaviour First()
+    {
+        CarBehaviour go = null;
 
         if (queue.Count > 0)
         {
@@ -26,13 +38,13 @@ public class QueueManager : MonoBehaviour
         }
         return go;
     }
-    public void Add(GameObject gameObject)
+    public void Add(CarBehaviour CarBehaviour)
     {
-        queue.Add(gameObject);
+        queue.Add(CarBehaviour);
     }
-    public GameObject PopFirst()
+    public CarBehaviour PopFirst()
     {
-        GameObject go = null;
+        CarBehaviour go = null;
         if (queue.Count > 0)
         {
             go = queue[0];

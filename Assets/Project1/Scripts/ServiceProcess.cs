@@ -23,25 +23,25 @@ public class ServiceProcess : MonoBehaviour
     public float maxInterServiceTimeInSeconds = 60;
     //
 
-    //New as Feb.25th
-    //CarController carController;
-    QueueManager queueManager; //=new QueueManager();
+    
 
 
     //new
     private float avgTimeInQ;//rho/(1-rho)*1/mu
     private float avgTimeInSystem;//1/(1-rho)*1/mu
-    private float avgTimeAtWindow;
-    private ArrivalMechanism arrivalMechanism;
+    private const float timeScale= 60 * 60;
+
+    private bool serving = false;
     public enum ServiceIntervalTimeStrategy
     {
-        ConstantIntervalTime,
-        UniformIntervalTime,
-        ExponentialIntervalTime,
-        ObservedIntervalTime
+        Constant,
+        Uniform,
+        Exponential,
+        ObservedIntervalTime,
+        Interrupted
     }
 
-    public ServiceIntervalTimeStrategy serviceIntervalTimeStrategy = ServiceIntervalTimeStrategy.UniformIntervalTime;
+    public ServiceIntervalTimeStrategy serviceIntervalTimeStrategy = ServiceIntervalTimeStrategy.Uniform;
 
     // Start is called before the first frame update
     void Start()
@@ -51,34 +51,40 @@ public class ServiceProcess : MonoBehaviour
         interServiceTimeInSeconds = interServiceTimeInMinutes * 60;
 
         //new
-        avgTimeInQ = arrivalMechanism.trafficIntensity / (arrivalMechanism.probSystemNotIdle) * (1 / arrivalMechanism.rateOfService);
-        avgTimeInSystem = 1 / (arrivalMechanism.probSystemNotIdle) * (1 / arrivalMechanism.rateOfService);
+        avgTimeInQ = ArrivalMechanism.instance.trafficIntensity / (ArrivalMechanism.instance.probSystemNotIdle) * (1 / ArrivalMechanism.instance.rateOfService);
+        avgTimeInSystem = 1 / (ArrivalMechanism.instance.probSystemNotIdle) * (1 / ArrivalMechanism.instance.rateOfService);
 
-        avgTimeAtWindow = avgTimeInSystem - avgTimeInQ;
+       
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         print("ServiceProcess.OnTriggerEnter:other=" + other.gameObject.name);
 
         
-
-
-        if (other.gameObject.tag == "Car")
-        {
+            if (other.gameObject.tag == "Car"&&!serving)
+            {
+            serving = true;
             carInService = other.gameObject;
             CarBehaviour carBehaviour = carInService.GetComponent<CarBehaviour>();
-            
-            if (carBehaviour.stateMachine.CurrentState.Name!="service") {
-                carBehaviour.stateMachine.TransitionTo("Service"); Debug.Log("In service");
+
+                if (carBehaviour.stateMachine.CurrentState.Name != "service")
+                {
+                
+                carBehaviour.stateMachine.TransitionTo("Service"); //Debug.Log("In service");
+                }
+                else
+                {
+                    //Debug.Log("We in service bro");
+                }
+                generateServices = true;
+                StartCoroutine(GenerateServices());
             }
-            else
-            {
-                Debug.Log("We in service bro");
-            }
-            generateServices = true;
-            StartCoroutine(GenerateServices());
-        }
+        
+       
     }
+
+    
+    
 
     IEnumerator GenerateServices()
     {
@@ -88,19 +94,22 @@ public class ServiceProcess : MonoBehaviour
             float timeToNextServiceInSec = interServiceTimeInSeconds;
             switch (serviceIntervalTimeStrategy)
             {
-                case ServiceIntervalTimeStrategy.ConstantIntervalTime:
+                case ServiceIntervalTimeStrategy.Constant:
                     timeToNextServiceInSec = interServiceTimeInSeconds;
                     break;
-                case ServiceIntervalTimeStrategy.UniformIntervalTime:
+                case ServiceIntervalTimeStrategy.Uniform:
                     timeToNextServiceInSec = Random.Range(minInterServiceTimeInSeconds, maxInterServiceTimeInSeconds);
                     break;
-                case ServiceIntervalTimeStrategy.ExponentialIntervalTime:
+                case ServiceIntervalTimeStrategy.Exponential:
                     float U = Random.value;
                     float Lambda = 1 / serviceRateAsCarsPerHour;
                     timeToNextServiceInSec = Utilities.GetExp(U, Lambda);
                     break;
                 case ServiceIntervalTimeStrategy.ObservedIntervalTime:
                     timeToNextServiceInSec = interServiceTimeInSeconds;
+                    break;
+                case ServiceIntervalTimeStrategy.Interrupted:
+                    timeToNextServiceInSec = (avgTimeInSystem - avgTimeInQ)*timeScale; 
                     break;
                 default:
                     print("No acceptable ServiceIntervalTimeStrategy:" + serviceIntervalTimeStrategy);
@@ -116,6 +125,7 @@ public class ServiceProcess : MonoBehaviour
 
         }
         carInService.GetComponent<CarBehaviour>().stateMachine.TransitionTo("Exit"); Debug.Log("Car exiting");
+        serving = false;
 
     }
     private void OnDrawGizmos()
