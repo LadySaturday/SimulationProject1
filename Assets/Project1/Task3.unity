@@ -3830,7 +3830,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1741770765}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.489, z: 24.56}
+  m_LocalPosition: {x: -1.34, y: 0.489, z: 24.56}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3847,8 +3847,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 2, z: 3}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.17705631, y: 2, z: 5.8754387}
+  m_Center: {x: 2, y: 0, z: 1.4377193}
 --- !u!114 &1741770768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3864,7 +3864,7 @@ MonoBehaviour:
   carInService: {fileID: 0}
   carExitPlace: {fileID: 903346710}
   serviceRateAsCarsPerHour: 30
-  interServiceTimeInHours: 0
+  interServiceTime: 0
   generateServices: 1
   minInterServiceTimeInSeconds: 3
   maxInterServiceTimeInSeconds: 5

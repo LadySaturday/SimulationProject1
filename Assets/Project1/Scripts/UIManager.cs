@@ -50,7 +50,7 @@ public class UIManager : MonoBehaviour
     }
     public void onStrategyChange()
     {
-        switch (dropDown.options[dropDown.value].text)
+        switch (dropDown.options[dropDown.value].text)//will need to change to add arrival mechanism
         {
             case "Constant":
                 serviceProcess.serviceIntervalTimeStrategy = ServiceProcess.ServiceIntervalTimeStrategy.Constant;

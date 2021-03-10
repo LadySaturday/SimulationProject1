@@ -23,8 +23,8 @@ public class CarBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        refreshTargets += UpdateTarget;
-
+        transform.parent = null;
+       // refreshTargets += UpdateTarget;
         queueManager = GameObject.FindGameObjectWithTag("DriveThruWindow").GetComponent<QueueManager>();
         index=queueManager.Add(this);
 
@@ -46,19 +46,16 @@ public class CarBehaviour : MonoBehaviour
                     setDestination(target.transform);
                     targetTransform=target.transform;
                 }
-
                 else
                 {
                     setDestination(window);
                     targetTransform = window;
-
                 }
                    
             },
             OnStay = () =>
             {
                 setDestination(targetTransform);
-
             },
             OnExit = () =>
             {
@@ -71,22 +68,11 @@ public class CarBehaviour : MonoBehaviour
             Name = "Service",
             OnEnter = () =>
             {
-
-                if (hasBeenServiced)
-                {
-                    stateMachine.TransitionTo("Exit");
-                    
-                }
-                    
-                else
-                {
                     agent.isStopped = true;
-                    hasBeenServiced = true;
-                }
+                    
             },
             OnStay = () =>
             {
-                setDestination(targetTransform);
             },
             OnExit = () =>
             {
@@ -103,8 +89,6 @@ public class CarBehaviour : MonoBehaviour
                 setDestination(exit); 
                 queueManager.PopFirst();
                 refreshTargets?.Invoke();
-                //queueManager.Last()?.setDestination(window);
-
             },
             OnStay = () =>
             {
@@ -116,13 +100,13 @@ public class CarBehaviour : MonoBehaviour
             }
 
         });
-
         stateMachine.TransitionTo("Entered");
     }
 
     public void setDestination(Transform target)
     {
-        agent.SetDestination(target.position);
+        if (target)
+            agent.SetDestination(target.position);        
     }
 
     private void OnTriggerEnter(Collider other)
@@ -131,21 +115,30 @@ public class CarBehaviour : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+
+        else if (other.gameObject.tag == "Car"&&stateMachine.CurrentState.Name!="Exit")
+            agent.isStopped = true;
     }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Car")
+            agent.isStopped = false;
+        else if (other.gameObject.tag == "DriveThruWindow" && stateMachine.CurrentState.Name != "Exit")
+            stateMachine.TransitionTo("exit");
+    }
+
 
     private void Update()
     {
-        stateMachine.Update();
-        
+        stateMachine.Update();       
     }
 
 
     private void UpdateTarget()
     {
+        
         try
         {
-
-
             if (stateMachine.CurrentState.Name != "exit")
             {
                 if (!target || target.stateMachine.CurrentState.Name == "exit")
@@ -153,23 +146,34 @@ public class CarBehaviour : MonoBehaviour
                     target = null;
                     setDestination(window);
                     targetTransform = window;
+                    agent.isStopped = false;
                 }
                 else
                 {
-                    setDestination(target.transform);
+                    
                 }
+            }
+            else
+            {
+                target = null;
+                setDestination(exit);
+                targetTransform = exit;
+                agent.isStopped = false;
             }
         }
         catch (Exception)
         {
-            Debug.Log("bruh");
             target = null;
-            targetTransform = window;
+            targetTransform = exit;
         }
     }
 
     private void OnDestroy()
     {
         refreshTargets -= UpdateTarget;
+        
     }
+
+  
+    
 }

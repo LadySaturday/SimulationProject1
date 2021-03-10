@@ -13,24 +13,17 @@ public class ServiceProcess : MonoBehaviour
 
     //public float ServiceRateAsCarsPerHour = 20; // car/hour
     public bool generateServices = false;
-
-    //New as of Feb.23rd
+    
     //Simple generation distribution - Uniform(min,max)
-    //
+
     public float minInterServiceTimeInSeconds = 3;
     public float maxInterServiceTimeInSeconds = 60;
-    //
-   
 
-    
-
-
-    //new
+    //M/1/1
     private float avgTimeInQ;//rho/(1-rho)*1/mu
     private float avgTimeInSystem;//1/(1-rho)*1/mu
     private const float timeScale= 60 * 60;
-
-    private bool servicing = false;
+    
     public enum ServiceIntervalTimeStrategy
     {
         Constant,
@@ -45,8 +38,7 @@ public class ServiceProcess : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        calculations();
-       
+        calculations();      
     }
 
     public void calculations()
@@ -59,25 +51,15 @@ public class ServiceProcess : MonoBehaviour
 
     }
     private void OnTriggerEnter(Collider other)
-    {
-
-        
-            if (other.gameObject.tag == "Car")//&&!servicing&&!other.GetComponent<CarBehaviour>().hasBeenServiced)
+    {     
+            if (other.gameObject.tag == "Car")
             {
-
-            carInService = other.gameObject;
-            //servicing = true;
-            CarBehaviour carBehaviour = carInService.GetComponent<CarBehaviour>();
+                carInService = other.gameObject;
+                CarBehaviour carBehaviour = carInService.GetComponent<CarBehaviour>();
 
                 if (carBehaviour.stateMachine.CurrentState.Name != "service")
                 {
-                
-                carBehaviour.stateMachine.TransitionTo("Service"); Debug.Log("In service");
-                
-            }
-                else
-                {
-                    Debug.Log("We in service bro");
+                    carBehaviour.stateMachine.TransitionTo("Service");
                 }
             generateServices = true;
             StartCoroutine(GenerateServices());
@@ -125,12 +107,10 @@ public class ServiceProcess : MonoBehaviour
             generateServices = false;
            
             yield return new WaitForSeconds(timeToNextServiceInSec);
-            
+            if (carInService)
+                carInService.GetComponent<CarBehaviour>().stateMachine.TransitionTo("Exit");
 
-        }
-        if(carInService)
-        carInService.GetComponent<CarBehaviour>().stateMachine.TransitionTo("Exit");
-        //servicing = false;
+        }    
 
     }
     private void OnDrawGizmos()

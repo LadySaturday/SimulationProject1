@@ -6,7 +6,11 @@ public class ArrivalMechanism : MonoBehaviour
 {
     //our arrival mechanism spawns a car on average 30 times per hour. 
     public static ArrivalMechanism instance { get; private set; }
-   
+
+
+    private StateMachine stateMachine;
+
+    //M/1/1
     public float arrivalRate = 30;//30 per hour, Lambda
     private float interArrivalTime;
     public float rateOfService { get; private set; } = 60;//mu
@@ -21,12 +25,13 @@ public class ArrivalMechanism : MonoBehaviour
     private float avgNumCarsInSystem;//rho/(1-rho)
     private float avgNumCarsInQ_noQ;//rho^2/(1-rho)
     private float avgNumCarsInQ_WQ;//1/(1-rho)
-
+    private float timeToNextCarSpawn;
     private bool canSpawn=true;
     //car prefab &spawn
     public GameObject carPrefab;
 
     public bool generateArrivals=true;
+    private float minTime = 1, maxTime = 60;
 
     private void Awake()
     {
@@ -54,10 +59,72 @@ public class ArrivalMechanism : MonoBehaviour
         avgNumCarsInQ_WQ = 1 / (probSystemNotIdle);
     }
 
+    private void Start()
+    {
+       // Constant,
+       // Uniform,
+       // Exponential,
+      //  Observed,
+       // Interrupted
+
+        stateMachine = new StateMachine();
+        stateMachine.AddState(new StateMachine.State()
+        {
+            Name = "Interrupted",
+            OnEnter = () =>
+            {
+                timeToNextCarSpawn = interArrivalTime;
+            },
+            OnStay = () =>{},
+            OnExit = () =>{}
+        });
+        stateMachine.AddState(new StateMachine.State()
+        {
+            Name = "Constant",
+            OnEnter = () =>
+            {
+                timeToNextCarSpawn = interArrivalTime;
+            },
+            OnStay = () => { },
+            OnExit = () => { }
+        });
+        stateMachine.AddState(new StateMachine.State()
+        {
+            Name = "Uniform",
+            OnEnter = () =>
+            {
+                timeToNextCarSpawn = Random.Range(minTime, maxTime);
+            },
+            OnStay = () => { },
+            OnExit = () => { }
+        });
+        stateMachine.AddState(new StateMachine.State()
+        {
+            Name = "Exponential",
+            OnEnter = () =>
+            {
+                timeToNextCarSpawn = Utilities.GetExp(Random.value, interArrivalTime);
+            },
+            OnStay = () => { },
+            OnExit = () => { }
+        });
+        stateMachine.AddState(new StateMachine.State()
+        {
+            Name = "Observed",
+            OnEnter = () =>
+            {
+                timeToNextCarSpawn = interArrivalTime;
+            },
+            OnStay = () => { },
+            OnExit = () => { }
+        });
+        stateMachine.TransitionTo("Interrupted");
+    }
+
     private void Spawn()
     {
         canSpawn = false;
-        Invoke("SetSpawnFlag", interArrivalTime);
+        Invoke("SetSpawnFlag", timeToNextCarSpawn);
         GameObject carClone = Instantiate(carPrefab, transform);
     }
 
