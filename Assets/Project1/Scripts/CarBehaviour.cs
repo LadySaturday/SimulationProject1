@@ -45,11 +45,13 @@ public class CarBehaviour : MonoBehaviour
                     target = queueManager.Next();
                     setDestination(target.transform);
                     targetTransform=target.transform;
+                    agent.stoppingDistance = 5;
                 }
                 else
                 {
                     setDestination(window);
                     targetTransform = window;
+                    agent.stoppingDistance = 3;
                 }
                    
             },
@@ -86,13 +88,16 @@ public class CarBehaviour : MonoBehaviour
             OnEnter = () =>
             {
                 agent.isStopped = false;
-                setDestination(exit); 
+                Debug.Log("Setting to exit");
+                setDestination(exit);
+                agent.stoppingDistance = 3;
                 queueManager.PopFirst();
                 refreshTargets?.Invoke();
             },
             OnStay = () =>
             {
                 setDestination(exit);
+                agent.stoppingDistance = 3;
             },
             OnExit = () =>
             {
@@ -116,15 +121,15 @@ public class CarBehaviour : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-        else if (other.gameObject.tag == "Car"&&stateMachine.CurrentState.Name!="Exit")
+        else if (other.gameObject.tag == "Car" && stateMachine.CurrentState.Name!="Exit")
             agent.isStopped = true;
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "Car")
             agent.isStopped = false;
-        else if (other.gameObject.tag == "DriveThruWindow" && stateMachine.CurrentState.Name != "Exit")
-            stateMachine.TransitionTo("exit");
+        //else if (other.gameObject.tag == "DriveThruWindow" && stateMachine.CurrentState.Name != "Exit")
+        //    stateMachine.TransitionTo("exit");
     }
 
 
@@ -145,6 +150,7 @@ public class CarBehaviour : MonoBehaviour
                 {
                     target = null;
                     setDestination(window);
+                    agent.stoppingDistance = 3;
                     targetTransform = window;
                     agent.isStopped = false;
                 }
@@ -157,6 +163,7 @@ public class CarBehaviour : MonoBehaviour
             {
                 target = null;
                 setDestination(exit);
+                agent.stoppingDistance = 3;
                 targetTransform = exit;
                 agent.isStopped = false;
             }

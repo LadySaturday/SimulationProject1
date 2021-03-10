@@ -60,9 +60,10 @@ public class ServiceProcess : MonoBehaviour
                 if (carBehaviour.stateMachine.CurrentState.Name != "service")
                 {
                     carBehaviour.stateMachine.TransitionTo("Service");
-                }
-            generateServices = true;
-            StartCoroutine(GenerateServices());
+                    generateServices = true;
+                    StartCoroutine(GenerateServices());
+            }
+
         }
         
        
@@ -105,10 +106,18 @@ public class ServiceProcess : MonoBehaviour
             //New as of Feb.23rd
             //float timeToNextServiceInSec = Random.Range(minInterServiceTimeInSeconds,maxInterServiceTimeInSeconds);
             generateServices = false;
-           
+
+            
+            //yield return new WaitForSeconds(150);
             yield return new WaitForSeconds(timeToNextServiceInSec);
+
+
             if (carInService)
+            {
                 carInService.GetComponent<CarBehaviour>().stateMachine.TransitionTo("Exit");
+                
+            }
+                
 
         }    
 
