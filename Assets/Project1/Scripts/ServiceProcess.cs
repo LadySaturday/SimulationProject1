@@ -102,8 +102,7 @@ public class ServiceProcess : MonoBehaviour
                     break;
 
             }
-
-            //New as of Feb.23rd
+            
             //float timeToNextServiceInSec = Random.Range(minInterServiceTimeInSeconds,maxInterServiceTimeInSeconds);
             generateServices = false;
 
@@ -115,24 +114,17 @@ public class ServiceProcess : MonoBehaviour
             if (carInService)
             {
                 carInService.GetComponent<CarBehaviour>().stateMachine.TransitionTo("Exit");
-                
             }
-                
 
         }    
-
     }
     private void OnDrawGizmos()
     {
-        //BoxCollidercarInService.GetComponent<BoxCollider>
         if (carInService)
         {
-            Renderer r = carInService.GetComponent<Renderer>();
+            Renderer r = carInService.gameObject.transform.GetChild(0).GetChild(0).GetComponent<Renderer>();
             r.material.color = Color.green;
-
         }
-
-
     }
 
 }

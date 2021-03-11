@@ -61,11 +61,6 @@ public class ArrivalMechanism : MonoBehaviour
 
     private void Start()
     {
-       // Constant,
-       // Uniform,
-       // Exponential,
-      //  Observed,
-       // Interrupted
 
         stateMachine = new StateMachine();
         stateMachine.AddState(new StateMachine.State()
