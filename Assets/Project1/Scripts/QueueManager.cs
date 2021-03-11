@@ -6,17 +6,7 @@ public class QueueManager : MonoBehaviour
 {
     List<CarBehaviour> queue = new List<CarBehaviour>();
 
-    public CarBehaviour Last()
-    {
-        CarBehaviour go = null;
-
-        if (queue.Count > 0)
-        {
-            go= queue[queue.Count - 1];
-        }
-        return go;
-    }
-
+    public CarBehaviour Last() => queue.Count > 0 ? queue[queue.Count - 1] : null;
     public CarBehaviour Next()
     {
         CarBehaviour go = null;
@@ -28,16 +18,7 @@ public class QueueManager : MonoBehaviour
         
         return go;
     }
-    public CarBehaviour First()
-    {
-        CarBehaviour go = null;
-
-        if (queue.Count > 0)
-        {
-            go = queue[0];
-        }
-        return go;
-    }
+    public CarBehaviour First() => queue.Count > 0 ? queue[0] : null;
     public int Add(CarBehaviour CarBehaviour)
     {
         int index = queue.Count;

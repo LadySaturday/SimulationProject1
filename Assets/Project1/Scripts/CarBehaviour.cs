@@ -59,10 +59,7 @@ public class CarBehaviour : MonoBehaviour
             {
                 setDestination(targetTransform);
             },
-            OnExit = () =>
-            {
-                
-            }
+            // OnExit = () => { }
 
         });
         stateMachine.AddState(new StateMachine.State()
@@ -70,17 +67,10 @@ public class CarBehaviour : MonoBehaviour
             Name = "Service",
             OnEnter = () =>
             {
-                    agent.isStopped = true;
-                    
+                agent.isStopped = true;
             },
-            OnStay = () =>
-            {
-            },
-            OnExit = () =>
-            {
-             
-            }
-
+            // OnStay = () => { },
+            // OnExit = () => { }
         });
         stateMachine.AddState(new StateMachine.State()
         {
@@ -99,10 +89,7 @@ public class CarBehaviour : MonoBehaviour
                 setDestination(exit);
                 agent.stoppingDistance = 3;
             },
-            OnExit = () =>
-            {
-                
-            }
+            // OnExit = () => { }
 
         });
         stateMachine.TransitionTo("Entered");
@@ -138,7 +125,9 @@ public class CarBehaviour : MonoBehaviour
         stateMachine.Update();       
     }
 
-
+    /**
+     * Sorry it's really hacky
+     */
     private void UpdateTarget()
     {
         
@@ -153,10 +142,6 @@ public class CarBehaviour : MonoBehaviour
                     agent.stoppingDistance = 3;
                     targetTransform = window;
                     agent.isStopped = false;
-                }
-                else
-                {
-                    
                 }
             }
             else
