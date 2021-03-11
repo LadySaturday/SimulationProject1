@@ -13,6 +13,7 @@ public class ServiceProcess : MonoBehaviour
 
     //public float ServiceRateAsCarsPerHour = 20; // car/hour
     public bool generateServices = false;
+    public bool LogTimeStratEnabled = true;
     
     //Simple generation distribution - Uniform(min,max)
 
@@ -50,23 +51,25 @@ public class ServiceProcess : MonoBehaviour
         avgTimeInSystem = 1 / (ArrivalMechanism.instance.probSystemNotIdle) * (1 / ArrivalMechanism.instance.rateOfService);
 
     }
-    private void OnTriggerEnter(Collider other)
-    {     
-            if (other.gameObject.tag == "Car")
+    private void OnTriggerEnter(Collider other) {
+        if (other.gameObject.tag == "Car") {
+            carInService = other.gameObject;
+            CarBehaviour carBehaviour = carInService.GetComponent<CarBehaviour>();
+
+            var state = carBehaviour.stateMachine.CurrentState;
+
+            if (!state.IsNamed("service"))
             {
-                carInService = other.gameObject;
-                CarBehaviour carBehaviour = carInService.GetComponent<CarBehaviour>();
-
-                if (carBehaviour.stateMachine.CurrentState.Name != "service")
-                {
-                    carBehaviour.stateMachine.TransitionTo("Service");
-                    generateServices = true;
-                    StartCoroutine(GenerateServices());
+                carBehaviour.stateMachine.TransitionTo("Service");
+                generateServices = true;
+                StartCoroutine(GenerateServices());
             }
-
         }
         
-       
+    }
+
+    private void LogTimeStrat(ServiceIntervalTimeStrategy strat, float time) {
+        Debug.Log($"[Time until next: {time} ({strat})]");
     }
 
     
@@ -106,7 +109,13 @@ public class ServiceProcess : MonoBehaviour
             //float timeToNextServiceInSec = Random.Range(minInterServiceTimeInSeconds,maxInterServiceTimeInSeconds);
             generateServices = false;
 
-            
+            if (LogTimeStratEnabled) {
+                LogTimeStrat(serviceIntervalTimeStrategy, timeToNextServiceInSec);
+            }
+            if (float.IsInfinity(timeToNextServiceInSec)) {
+                Debug.LogWarning("Encountered Infinity Glitch");
+                timeToNextServiceInSec = 30f;
+            }
             //yield return new WaitForSeconds(150);
             yield return new WaitForSeconds(timeToNextServiceInSec);
 

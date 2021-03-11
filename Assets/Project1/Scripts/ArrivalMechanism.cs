@@ -25,7 +25,16 @@ public class ArrivalMechanism : MonoBehaviour
     private float avgNumCarsInSystem;//rho/(1-rho)
     private float avgNumCarsInQ_noQ;//rho^2/(1-rho)
     private float avgNumCarsInQ_WQ;//1/(1-rho)
-    private float timeToNextCarSpawn;
+    private float m_timeToNextCarSpawn;
+    private float timeToNextCarSpawn {
+        get => m_timeToNextCarSpawn;
+        set {
+            m_timeToNextCarSpawn = value;
+            /*if (value != 0) {
+                throw new System.Exception();
+            }*/
+        }
+    }
     private bool canSpawn=true;
     //car prefab &spawn
     public GameObject carPrefab;
@@ -43,6 +52,7 @@ public class ArrivalMechanism : MonoBehaviour
 
     public void calculations()
     {
+        //Debug.Log("CALCULATIONS");
         //M/M/1 variables
         interArrivalTime = (1 / arrivalRate) * 60 * 60;//1/lambda
         serviceTime = 1 / rateOfService;//1/mu
@@ -57,6 +67,7 @@ public class ArrivalMechanism : MonoBehaviour
         avgNumCarsInSystem = trafficIntensity / (probSystemNotIdle);
         avgNumCarsInQ_noQ = Mathf.Pow(trafficIntensity, 2) / (probSystemNotIdle);
         avgNumCarsInQ_WQ = 1 / (probSystemNotIdle);
+        timeToNextCarSpawn = interArrivalTime;
     }
 
     private void Start()
@@ -120,6 +131,7 @@ public class ArrivalMechanism : MonoBehaviour
     {
         canSpawn = false;
         Invoke("SetSpawnFlag", timeToNextCarSpawn);
+        Debug.Log("TIME TO NEXT CAR: " + timeToNextCarSpawn);
         GameObject carClone = Instantiate(carPrefab, transform);
     }
 

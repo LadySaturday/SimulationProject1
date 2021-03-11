@@ -36,7 +36,7 @@ public class UIManager : MonoBehaviour
 
     public void onServiceRateChange()
     {
-        if (!string.IsNullOrWhiteSpace(arrivalRate.text))
+        if (!string.IsNullOrWhiteSpace(serviceRate.text))
             serviceProcess.serviceRateAsCarsPerHour = float.Parse(serviceRate.text);
         else
             serviceProcess.serviceRateAsCarsPerHour = 0;

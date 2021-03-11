@@ -121,7 +121,7 @@ public class CarBehaviour : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-        else if (other.gameObject.tag == "Car" && stateMachine.CurrentState.Name!="Exit")
+        else if (other.gameObject.tag == "Car" && !(stateMachine.CurrentState.IsNamed("Exit")))
             agent.isStopped = true;
     }
     private void OnTriggerExit(Collider other)

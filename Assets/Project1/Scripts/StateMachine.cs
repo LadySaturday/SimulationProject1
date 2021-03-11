@@ -77,6 +77,10 @@ public class StateMachine {
         public Action OnExit;
         public Action OnStay;
 
+        public bool IsNamed(string name) {
+            return Name.ToLower() == name.ToLower();
+        }
+
         public override string ToString() => Name;
     }
 
